@@ -24,6 +24,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.trungtamjava.tiktok.dao.LikeDao;
 import com.trungtamjava.tiktok.dao.VideoDao;
 import com.trungtamjava.tiktok.model.BaiViet;
+import com.trungtamjava.tiktok.model.CommentDto;
+import com.trungtamjava.tiktok.model.CommentFull;
 import com.trungtamjava.tiktok.model.LikeDto;
 import com.trungtamjava.tiktok.model.Profile;
 import com.trungtamjava.tiktok.model.UserDto;
@@ -264,7 +266,7 @@ public class PublicController {
 			return responeDto.<Profile>builder().status(400).msg("bad request").build();
 		}
 	}
-	/*user;video;likes;cmts;trangthai;daLike;*/
+	
 	@GetMapping("/SelectRandomNotLogin")
 	public responeDto<List<BaiViet>>SelectRandomNotLogin(@RequestParam("userId") int userId){
 		try {
@@ -291,6 +293,137 @@ public class PublicController {
 			// TODO: handle exception
 			log.info(e.getMessage());
 			return responeDto.<List<BaiViet>>builder().status(400).msg("Bad request").build();
+		}
+	}
+	@GetMapping("/SearchAllCmtsByVideoId")
+	public responeDto<List<CommentFull>>SearchAllCmtsByVideoId(@RequestParam("videoId") int videoId,
+			@RequestParam("userId") int userId){
+		try {
+			VideoDto videoDto = videoServiceImpl.SearchById(videoId);
+			List<CommentDto>commentDtos = commentServiceImpl.SelectListByVideo(videoDto);
+			List<CommentFull>commentFulls = new ArrayList<CommentFull>();
+			UserDto userx = userserviceImpl.SearchById(userId);
+			for (CommentDto comment:commentDtos) {
+				CommentFull full = new CommentFull();
+				full.setCmt(comment);
+				UserDto user = userserviceImpl.SearchById(comment.getUserId());
+				full.setUser(user);
+				if (userId>0) {
+					if (user.getId()==userId) {
+						full.setTrangthai(1);
+					} else if (folowerServiceImpl.kiemtra(userx, user)!=null){
+						full.setTrangthai(3);
+					} else full.setTrangthai(2);
+				} else full.setTrangthai(0);
+				commentFulls.add(full);
+			}
+			return responeDto.<List<CommentFull>>builder().msg("OK").status(200).data(commentFulls).build();
+		} catch (Exception e) {
+			// TODO: handle exception
+			return responeDto.<List<CommentFull>>builder().msg("not found").status(404).build();
+		}
+	}
+	@GetMapping("/SearchBaiVietByVideoId")
+	public responeDto<BaiViet> SearchBaiVietByVideoId(@RequestParam("videoId") int videoId,
+			@RequestParam("userId") int userId){
+		try {
+			VideoDto video = videoServiceImpl.SearchById(videoId);
+			BaiViet baiViet = new BaiViet();
+			baiViet.setVideo(video);
+			UserDto user = userserviceImpl.SearchById(video.getUserId());
+			baiViet.setUser(user);
+			baiViet.setLikes(likeServiceImpl.countByVideo(video));
+			baiViet.setCmts(commentServiceImpl.countByVideo(video));
+			if (userId>0) {
+				if (folowerServiceImpl.kiemtra(userserviceImpl.SearchById(userId),user)!=null) {
+					baiViet.setTrangthai(3);
+				} else if (userId==user.getId()) {
+					baiViet.setTrangthai(1);
+				} else baiViet.setTrangthai(2);
+				
+			} else baiViet.setTrangthai(0);
+			if (userId>0) {
+				if (likeServiceImpl.selectByUserIdAndVideoId(userId, video.getId())!=null) {
+					baiViet.setDaLike(2);
+				} else {
+					baiViet.setDaLike(1);
+				}
+			} else {
+				baiViet.setDaLike(0);
+			}
+			return responeDto.<BaiViet>builder().status(200)
+					.msg("success").data(baiViet).build();
+		} catch (Exception e) {
+			// TODO: handle exception
+			return responeDto.<BaiViet>builder().status(400)
+					.msg("bad request").build();
+		}
+	}
+	@GetMapping("/Search-Post-By-navBar")
+	public responeDto<List<BaiViet>> SearchPostBynavBar(@RequestParam("size") int size,
+			@RequestParam("userId") int userId,@RequestParam("q") String q){
+		try {
+			List<BaiViet>baiViets =  new ArrayList<BaiViet>();
+			List<VideoDto> videos = videoServiceImpl.SearchPageByMota(q,0,size);
+
+			for (VideoDto videoDto:videos) {
+				BaiViet baiViet = new BaiViet();
+				baiViet.setVideo(videoDto);
+				UserDto user = userserviceImpl.SearchById(videoDto.getUserId());
+				baiViet.setUser(user);
+				baiViet.setLikes(likeServiceImpl.countByVideo(videoDto));
+				baiViet.setCmts(commentServiceImpl.countByVideo(videoDto));
+				if (userId>0) {
+					if (folowerServiceImpl.kiemtra(userserviceImpl.SearchById(userId),user)!=null) {
+						baiViet.setTrangthai(3);
+					} else if (userId==user.getId()) {
+						baiViet.setTrangthai(1);
+					} else baiViet.setTrangthai(2);
+					
+				} else baiViet.setTrangthai(0);
+				if (userId>0) {
+					if (likeServiceImpl.selectByUserIdAndVideoId(userId, videoDto.getId())!=null) {
+						baiViet.setDaLike(2);
+					} else {
+						baiViet.setDaLike(1);
+					}
+				} else {
+					baiViet.setDaLike(0);
+				}
+				baiViets.add(baiViet);
+			}
+			return responeDto.<List<BaiViet>>builder().status(200)
+					.msg("success").data(baiViets).build();
+		} catch (Exception e) {
+			// TODO: handle exception
+			return responeDto.<List<BaiViet>>builder().status(404)
+					.msg("not found").build();
+		}
+	}
+	@GetMapping("/Search-profile-By-navBar")
+	public responeDto<List<Profile>>SearchProfileByNavBar(@RequestParam("size") int size,
+			@RequestParam("userId") int userId,@RequestParam("q") String q){
+		try {
+			List<Profile>profiles = new ArrayList<Profile>();
+			List<UserDto>userDtos=userserviceImpl.searchPageByKeyword(q, 0, size);
+			for (UserDto userDto:userDtos) {
+				Profile profile = new Profile();
+				profile.setUser(userDto);
+				int follower = folowerServiceImpl.folower(userDto);
+				int dangFollow = folowerServiceImpl.dangFolow(userDto);
+				profile.setDangFollow(dangFollow);
+				profile.setFollower(follower);
+				if (userId==0) profile.setTrangthai(0); else 
+					if (userId == userDto.getId()) profile.setTrangthai(1); else {
+					if (folowerServiceImpl.kiemtra(userserviceImpl.SearchById(userId), userDto)!=null) {
+						profile.setTrangthai(3);
+					} else profile.setTrangthai(2);
+					}
+				profiles.add(profile);
+			}
+			return responeDto.<List<Profile>>builder().status(200).msg("success").data(profiles).build();
+		} catch (Exception e) {
+			return responeDto.<List<Profile>>builder().status(404).msg("not found").build();
 		}
 	}
 }

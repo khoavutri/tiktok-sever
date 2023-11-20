@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.trungtamjava.tiktok.model.BaiViet;
+import com.trungtamjava.tiktok.model.CommentDto;
 import com.trungtamjava.tiktok.model.FolowerDto;
 import com.trungtamjava.tiktok.model.LikeDto;
 import com.trungtamjava.tiktok.model.Profile;
@@ -226,6 +227,26 @@ public class UserController {
 			// TODO: handle exception
 			return responeDto.<List<BaiViet>>builder().status(400)
 					.msg("bad request").build();
+		}
+	}
+	@PostMapping("/CreateCmt")
+	public responeDto<CommentDto> CreateCmt(@RequestBody CommentDto comment){
+		try {
+			commentServiceImpl.insert(comment);
+			return responeDto.<CommentDto>builder().status(201).msg("Created").build();
+		} catch (Exception e) {
+			// TODO: handle exception
+			return responeDto.<CommentDto>builder().status(400).msg("bad request").build();
+		}
+	}
+	@DeleteMapping("/DeleteCmt")
+	public responeDto<CommentDto>DeleteCmt(@RequestParam("cmtId") int cmtId){
+		try {
+			commentServiceImpl.delete(cmtId);
+			return responeDto.<CommentDto>builder().status(200).msg("OK").build();
+		} catch (Exception e) {
+			// TODO: handle exception
+			return responeDto.<CommentDto>builder().status(400).msg("bad request").build();
 		}
 	}
 }

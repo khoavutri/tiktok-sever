@@ -14,6 +14,8 @@ import com.trungtamjava.tiktok.entity.Video;
 public interface VideoDao extends JpaRepository<Video, Integer> {
 	List<Video> findByUser(User user);
 	Page<Video> findByUser(User user,Pageable pageable);
-	Page<Video> findByMota(String mota,Pageable pageable);
+	Page<Video> findByMota(String mota, Pageable pageable);
+	 @Query("SELECT v FROM Video v WHERE v.mota LIKE :mota")
+	    Page<Video> findByMotaUsingQuery(@Param("mota")String mota, Pageable pageable);
 	Page<Video> findAll(Pageable pageable);
 }

@@ -11,6 +11,9 @@ import com.trungtamjava.tiktok.dao.VideoDao;
 import com.trungtamjava.tiktok.entity.User;
 import com.trungtamjava.tiktok.entity.Video;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Component
 public class VideoDaoImpl {
 	@Autowired
@@ -36,7 +39,8 @@ public class VideoDaoImpl {
 	}
 	public Page<Video> SearchPageByMota(String mota,int currentPage,int size){
 		PageRequest pageRequest = PageRequest.of(currentPage, size);
-		Page<Video> pages = videoDao.findByMota("%"+mota+"%",pageRequest);
+		String xx = "%"+mota+"%";
+		Page<Video> pages = videoDao.findByMotaUsingQuery(xx,pageRequest);
 		return pages;
 	}
 	public void insert(Video video) {

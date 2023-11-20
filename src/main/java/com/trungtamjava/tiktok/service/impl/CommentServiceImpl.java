@@ -1,6 +1,8 @@
 package com.trungtamjava.tiktok.service.impl;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -110,6 +112,11 @@ public class CommentServiceImpl implements CommentService{
 			commentDto.setVideoId(comment.getVideo().getId());
 			commentDtos.add(commentDto);
 		}
+		commentDtos.sort(new Comparator<CommentDto>() {
+		    public int compare(CommentDto c1, CommentDto c2) {
+		        return c2.getDate().compareTo(c1.getDate());
+		    }
+		});
 		return commentDtos;
 	}
 

@@ -262,4 +262,53 @@ public class UserServiceImpl implements UserService,UserDetailsService  {
 		userDaoImpl.update(user);
 	}
 
+
+	@Override
+	public List<UserDto> searchAllByKeyword(String keyword) {
+		List<User> users = userDaoImpl.searchAllByKeyword(keyword);
+		if (users!=null) {
+			List<UserDto> userDtos = new ArrayList<UserDto>();
+			for (User user: users) {
+				UserDto userDto = new UserDto();
+				userDto.setId(user.getId());
+				userDto.setUserName(user.getUserName());
+				userDto.setPassWord(user.getPassWord());
+				userDto.setAvatar(user.getAvatar());
+				userDto.setGmail(user.getGmail());
+				userDto.setName(user.getName());
+				userDto.setFamous(user.getFamous());
+				userDto.setBio(user.getBio());
+				userDto.setRole(user.getRole());
+				userDto.setBirthday(user.getBirthday());
+				userDtos.add(userDto);
+			}
+			return userDtos;
+		} else return null;
+	}
+
+
+	@Override
+	public List<UserDto> searchPageByKeyword(String keyword, int currentPage, int size) {
+		// TODO Auto-generated method stub
+		List<User> users = userDaoImpl.searchPageByKeyword(keyword,currentPage,size).getContent();
+		if (users!=null) {
+			List<UserDto> userDtos = new ArrayList<UserDto>();
+			for (User user: users) {
+				UserDto userDto = new UserDto();
+				userDto.setId(user.getId());
+				userDto.setUserName(user.getUserName());
+				userDto.setPassWord(user.getPassWord());
+				userDto.setAvatar(user.getAvatar());
+				userDto.setGmail(user.getGmail());
+				userDto.setName(user.getName());
+				userDto.setFamous(user.getFamous());
+				userDto.setBio(user.getBio());
+				userDto.setRole(user.getRole());
+				userDto.setBirthday(user.getBirthday());
+				userDtos.add(userDto);
+			}
+			return userDtos;
+		} else return null;
+	}
+
 }

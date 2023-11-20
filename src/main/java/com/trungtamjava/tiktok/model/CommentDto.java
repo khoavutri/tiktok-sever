@@ -15,9 +15,6 @@ public class CommentDto {
 	@JsonFormat(pattern = "dd/MM/yyyy",timezone = "Asia/Ho_chi_minh")
 	private Date date;
 	private String content;
-
 	private int videoId;
-
-	private int userId;;
-	
+	private int userId;
 }

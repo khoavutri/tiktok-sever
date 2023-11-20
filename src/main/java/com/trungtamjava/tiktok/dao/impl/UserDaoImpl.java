@@ -6,6 +6,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Component;
 
 import com.trungtamjava.tiktok.dao.UserDao;
@@ -58,4 +61,14 @@ public class UserDaoImpl {
 		Page<User> pages = userDao.searchPeopletByName("%"+name+"%", pageRequest);
 		return pages;
 	}
+	 
+	 public List<User> searchAllByKeyword(String keyword){
+		 return userDao.searchAllByKeyword("%"+keyword+"%");
+	 }
+	 public Page<User> searchPageByKeyword(@Param("keyword") String keyword,int currentPage,
+				int size){
+		PageRequest pageRequest = PageRequest.of(currentPage, size);
+		Page<User> pages = userDao.searchPageByKeyword("%"+keyword+"%", pageRequest);
+			return pages;
+	 }
 }

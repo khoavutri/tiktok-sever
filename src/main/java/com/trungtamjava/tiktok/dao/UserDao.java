@@ -25,4 +25,9 @@ public interface UserDao extends JpaRepository<User, Integer>{
 	
 	@Query("SELECT u FROM User u WHERE u.name LIKE :x")
 	Page<User>searchPeopletByName(@Param("x") String s,Pageable pageable);
+	
+	 @Query("SELECT u FROM User u WHERE u.userName LIKE :keyword OR u.name LIKE :keyword OR u.bio LIKE :keyword")
+	 List<User> searchAllByKeyword(@Param("keyword") String keyword);
+	 @Query("SELECT u FROM User u WHERE u.userName LIKE :keyword OR u.name LIKE :keyword OR u.bio LIKE :keyword")
+	 Page<User> searchPageByKeyword(@Param("keyword") String keyword,Pageable pageable);
 }
