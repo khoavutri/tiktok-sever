@@ -311,4 +311,11 @@ public class UserServiceImpl implements UserService,UserDetailsService  {
 		} else return null;
 	}
 
+
+	@Override
+	public long countAll() {
+		// TODO Auto-generated method stub
+		return userDaoImpl.countAll();
+	}
+
 }

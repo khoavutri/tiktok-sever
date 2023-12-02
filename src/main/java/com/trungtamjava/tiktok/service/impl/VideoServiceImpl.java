@@ -160,4 +160,10 @@ public class VideoServiceImpl implements VideoService {
 		videoDaoImpl.delete(id);
 	}
 
+	@Override
+	public long countAll() {
+		// TODO Auto-generated method stub
+		return videoDaoImpl.countAll();
+	}
+
 }

@@ -77,4 +77,7 @@ public class LikeDaoImpl {
 	public Likee selectByUserAndVideo(User user,Video video) {
 		return likeDao.findByUserAndVideo(user, video);
 	}
+	public long countAll() {
+		return likeDao.count();
+	}
 }

@@ -82,4 +82,7 @@ public class CommentDaoImpl {
 	public void delete(int id) {
 		commentDao.deleteById(id);
 	}
+	public long countAll() {
+		return commentDao.count();
+	}
 }

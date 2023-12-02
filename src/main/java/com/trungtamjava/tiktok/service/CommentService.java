@@ -24,4 +24,5 @@ public interface CommentService {
 	public void insert(CommentDto commentDto);
 	public void upDate(CommentDto commentDto);
 	public void delete(int id);
+	public long countAll();
 }

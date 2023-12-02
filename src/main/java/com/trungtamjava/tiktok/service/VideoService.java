@@ -14,4 +14,5 @@ public interface VideoService {
 	public void insert(VideoDto videoDto);
 	public void update(VideoDto videoDto);
 	public void delete(int id);
+	public long countAll();
 }

@@ -23,4 +23,5 @@ public interface LikeService {
 	public void upDate(LikeDto likeDto);
 	public void deleteById(int id);
 	public LikeDto selectByUserIdAndVideoId(int userId,int videoId);
+	public long countAll();
 }

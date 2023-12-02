@@ -71,4 +71,7 @@ public class UserDaoImpl {
 		Page<User> pages = userDao.searchPageByKeyword("%"+keyword+"%", pageRequest);
 			return pages;
 	 }
+	 public long countAll() {
+			return userDao.count();
+		}
 }

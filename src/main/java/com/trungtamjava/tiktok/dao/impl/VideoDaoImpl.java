@@ -52,4 +52,7 @@ public class VideoDaoImpl {
 	public void delete(int id) {
 		videoDao.deleteById(id);
 	}
+	public long countAll() {
+		return videoDao.count();
+	}
 }

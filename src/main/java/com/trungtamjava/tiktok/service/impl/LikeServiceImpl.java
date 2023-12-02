@@ -239,5 +239,11 @@ public class LikeServiceImpl implements LikeService {
 		}
 	
 	}
+
+	@Override
+	public long countAll() {
+		// TODO Auto-generated method stub
+		return likeDaoImpl.countAll();
+	}
 	
 }

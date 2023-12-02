@@ -25,5 +25,5 @@ public interface UserService {
 	public void updateProfileByIddd(int userId, String avatar,String userName,String name,String bio);
 	public List<UserDto> searchAllByKeyword(String keyword);
 	public List<UserDto> searchPageByKeyword(String keyword,int currentPage,int size);
-		
+	public long countAll();
 }

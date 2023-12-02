@@ -264,4 +264,10 @@ public class CommentServiceImpl implements CommentService{
 		commentDaoImpl.delete(id);	
 	}
 
+	@Override
+	public long countAll() {
+		// TODO Auto-generated method stub
+		return commentDaoImpl.countAll();
+	}
+
 }
