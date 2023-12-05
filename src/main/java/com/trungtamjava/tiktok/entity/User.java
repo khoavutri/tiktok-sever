@@ -1,7 +1,7 @@
 package com.trungtamjava.tiktok.entity;
 import java.util.Date;
 import java.util.List;
-
+import java.util.Objects;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -59,6 +59,5 @@ public class User {
 	
 	@OneToMany(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.LAZY,orphanRemoval = true)
 	private List<Notifii> notifiis;
-
 
 }

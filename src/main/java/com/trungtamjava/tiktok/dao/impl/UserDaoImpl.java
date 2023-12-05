@@ -74,4 +74,10 @@ public class UserDaoImpl {
 	 public long countAll() {
 			return userDao.count();
 		}
+	 public Page<User> searchPageatAdmin(@Param("keyword") String keyword,int currentPage,
+				int size){
+		PageRequest pageRequest = PageRequest.of(currentPage, size);
+		Page<User> pages = userDao.searchPageAtAdmin(keyword, pageRequest);
+			return pages;
+	 }
 }

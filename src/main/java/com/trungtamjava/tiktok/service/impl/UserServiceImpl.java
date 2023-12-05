@@ -206,7 +206,7 @@ public class UserServiceImpl implements UserService,UserDetailsService  {
 		User user = new User();
 		user.setId(userDto.getId());
 		user.setUserName(userDto.getUserName());
-		user.setPassWord(new BCryptPasswordEncoder().encode(userDto.getPassWord()));
+		user.setPassWord(userDto.getPassWord());
 		user.setAvatar(userDto.getAvatar());
 		user.setGmail(userDto.getGmail());
 		user.setName(userDto.getName());
@@ -214,7 +214,7 @@ public class UserServiceImpl implements UserService,UserDetailsService  {
 		user.setBio(userDto.getBio());
 		user.setRole(userDto.getRole());
 		user.setBirthday(userDto.getBirthday());
-		userDaoImpl.insert(user);
+		userDaoImpl.update(user);
 	}
 
 	@Override
@@ -316,6 +316,30 @@ public class UserServiceImpl implements UserService,UserDetailsService  {
 	public long countAll() {
 		// TODO Auto-generated method stub
 		return userDaoImpl.countAll();
+	}
+
+
+	@Override
+	public List<UserDto> searchPageatAdmin(String keyword, int currentPage, int size) {
+		List<User> users = userDaoImpl.searchPageatAdmin(keyword,currentPage,size).getContent();
+		if (users!=null) {
+			List<UserDto> userDtos = new ArrayList<UserDto>();
+			for (User user: users) {
+				UserDto userDto = new UserDto();
+				userDto.setId(user.getId());
+				userDto.setUserName(user.getUserName());
+				userDto.setPassWord(user.getPassWord());
+				userDto.setAvatar(user.getAvatar());
+				userDto.setGmail(user.getGmail());
+				userDto.setName(user.getName());
+				userDto.setFamous(user.getFamous());
+				userDto.setBio(user.getBio());
+				userDto.setRole(user.getRole());
+				userDto.setBirthday(user.getBirthday());
+				userDtos.add(userDto);
+			}
+			return userDtos;
+		} else return null;
 	}
 
 }

@@ -30,4 +30,13 @@ public interface UserDao extends JpaRepository<User, Integer>{
 	 List<User> searchAllByKeyword(@Param("keyword") String keyword);
 	 @Query("SELECT u FROM User u WHERE u.userName LIKE :keyword OR u.name LIKE :keyword OR u.bio LIKE :keyword")
 	 Page<User> searchPageByKeyword(@Param("keyword") String keyword,Pageable pageable);
+	 
+	 @Query("SELECT u FROM User u WHERE " +
+		        "u.userName LIKE CONCAT('%', :keyword, '%') OR " +
+		        "u.name LIKE CONCAT('%', :keyword, '%') OR " +
+		        "CAST(u.id AS string) LIKE CONCAT('%', :keyword, '%') " +
+		        "ORDER BY u.id")
+		Page<User> searchPageAtAdmin(@Param("keyword") String keyword, Pageable pageable);
+
+
 }
