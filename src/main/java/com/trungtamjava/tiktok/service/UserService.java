@@ -22,4 +22,5 @@ public interface UserService {
 	public List<UserDto> searchPageByKeyword(String keyword,int currentPage,int size);
 	public long countAll();
 	public List<UserDto> searchPageatAdmin(String keyword,int currentPage,int size);
+	 public void updateUserDetails( String username,Boolean famous,String role);
 }

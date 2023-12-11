@@ -80,4 +80,7 @@ public class UserDaoImpl {
 		Page<User> pages = userDao.searchPageAtAdmin(keyword, pageRequest);
 			return pages;
 	 }
+	 public void updateUserDetails( String username,Boolean famous,String role) {
+		 userDao.updateUserDetails(username, famous, role);
+	 }
 }

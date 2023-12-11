@@ -342,4 +342,11 @@ public class UserServiceImpl implements UserService,UserDetailsService  {
 		} else return null;
 	}
 
+
+	@Override
+	public void updateUserDetails(String username, Boolean famous, String role) {
+		// TODO Auto-generated method stub
+			 userDaoImpl.updateUserDetails(username, famous, role);
+	}
+
 }

@@ -8,8 +8,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-
+import org.springframework.data.jpa.repository.Modifying;
 import com.trungtamjava.tiktok.entity.User;
+import org.springframework.transaction.annotation.Transactional;
 
 public interface UserDao extends JpaRepository<User, Integer>{
 	@Query("SELECT u FROM User u WHERE u.userName LIKE :s AND u.passWord LIKE :x")
@@ -38,5 +39,9 @@ public interface UserDao extends JpaRepository<User, Integer>{
 		        "ORDER BY u.id")
 		Page<User> searchPageAtAdmin(@Param("keyword") String keyword, Pageable pageable);
 
-
+	 	@Modifying
+	    @Transactional
+	    @Query("UPDATE User u SET u.famous = :famous, u.role = :role WHERE u.userName = :username")
+	    void updateUserDetails(@Param("username") String username, @Param("famous") Boolean famous, @Param("role") String role);
+	
 }
