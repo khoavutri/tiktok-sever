@@ -196,7 +196,8 @@ public class UserServiceImpl implements UserService,UserDetailsService  {
 		user.setName(userDto.getName());
 		user.setFamous(false);
 		user.setBio("");
-		user.setRole("USER");
+		if (!userDto.getRole().equals("ADMIN")) {
+		user.setRole("USER");} else {user.setRole("ADMIN");};
 		user.setBirthday(userDto.getBirthday());
 		userDaoImpl.insert(user);
 	}

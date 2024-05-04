@@ -132,10 +132,7 @@ public class PublicController {
 			
 			return responeDto.<String>builder().status(200)
 					.msg("success").data(jwtTokenService.creatToken(username)).build();
-		} catch (Exception e) {
-			// TODO: handle exception
-		
-			
+		} catch (Exception e) {	
 		if (userserviceImpl.SearchByUserName(username)!=null) 
 			return responeDto.<String>builder().msg("wrong password").status(401).build();
 		else
@@ -154,7 +151,7 @@ public class PublicController {
 	    s+=randomNumber;
 	    }
 		try {
-			sendMail.sendMail(gmail, "Tiktok UI","Mã Xác thực của em là: "+s);
+			sendMail.sendMail(gmail, "Tiktok UI","Mã Xác thực của bạn là: "+s);
 			return responeDto.<String>builder().msg("success").status(200).data(s).build();
 		} catch (Exception e) {
 			return responeDto.<String>builder().msg("failed").status(500).data("unable to send").build();
