@@ -19,7 +19,7 @@ import com.trungtamjava.tiktok.model.CommentDto;
 import com.trungtamjava.tiktok.model.CommentFull;
 import com.trungtamjava.tiktok.model.UserDto;
 import com.trungtamjava.tiktok.model.VideoDto;
-import com.trungtamjava.tiktok.model.responeDto;
+import com.trungtamjava.tiktok.model.ResponeDto;
 import com.trungtamjava.tiktok.service.impl.CommentServiceImpl;
 import com.trungtamjava.tiktok.service.impl.FolowerServiceImpl;
 import com.trungtamjava.tiktok.service.impl.LikeServiceImpl;
@@ -44,72 +44,72 @@ FolowerServiceImpl folowerServiceImpl;
 	@Autowired
 	CommentServiceImpl commentServiceImpl;
 	@GetMapping("/test")
-	public responeDto<String> test() {
-		return responeDto.<String>builder().status(200).msg("hay").data("sai ngu").build();
+	public ResponeDto<String> test() {
+		return ResponeDto.<String>builder().status(200).msg("hay").data("sai ngu").build();
 	}
 	@GetMapping("/countAll-videos")
-	public responeDto<Long>countAllVideos(){
+	public ResponeDto<Long>countAllVideos(){
 		try {
 			long x = videoServiceImpl.countAll();
-			return responeDto.<Long>builder().status(200).msg("ok").data(x).build();
+			return ResponeDto.<Long>builder().status(200).msg("ok").data(x).build();
 		} catch (Exception e) {
-			return responeDto.<Long>builder().status(400).msg("bad request").build();
+			return ResponeDto.<Long>builder().status(400).msg("bad request").build();
 		}
 	}
 	@GetMapping("/countAll-users")
-	public responeDto<Long>countAllUsers(){
+	public ResponeDto<Long>countAllUsers(){
 		try {
 			long x = userServiceImpl.countAll();
-			return responeDto.<Long>builder().status(200).msg("ok").data(x).build();
+			return ResponeDto.<Long>builder().status(200).msg("ok").data(x).build();
 		} catch (Exception e) {
-			return responeDto.<Long>builder().status(400).msg("bad request").build();
+			return ResponeDto.<Long>builder().status(400).msg("bad request").build();
 		}
 	}
 	@GetMapping("/countAll-cmts")
-	public responeDto<Long>countAllCmts(){
+	public ResponeDto<Long>countAllCmts(){
 		try {
 			long x = commentServiceImpl.countAll();
-			return responeDto.<Long>builder().status(200).msg("ok").data(x).build();
+			return ResponeDto.<Long>builder().status(200).msg("ok").data(x).build();
 		} catch (Exception e) {
-			return responeDto.<Long>builder().status(400).msg("bad request").build();
+			return ResponeDto.<Long>builder().status(400).msg("bad request").build();
 		}
 	}
 	@GetMapping("/countAll-likes")
-	public responeDto<Long>countAllLikes(){
+	public ResponeDto<Long>countAllLikes(){
 		try {
 			long x = likeServiceImpl.countAll();
-			return responeDto.<Long>builder().status(200).msg("ok").data(x).build();
+			return ResponeDto.<Long>builder().status(200).msg("ok").data(x).build();
 		} catch (Exception e) {
-			return responeDto.<Long>builder().status(400).msg("bad request").build();
+			return ResponeDto.<Long>builder().status(400).msg("bad request").build();
 		}
 	}
 	@PostMapping("/search-pageAll-atAdmin")
-	public responeDto<List<UserDto>>searchPageAllAtAdmin(@RequestParam("keyword") String keyword,
+	public ResponeDto<List<UserDto>>searchPageAllAtAdmin(@RequestParam("keyword") String keyword,
 			@RequestParam("currentPage") int currentPage,
 			@RequestParam("size") int size){
 		try {
 			int xx = currentPage-1;
 			List<UserDto> x = userServiceImpl.searchPageatAdmin(keyword,xx,size);
-			return responeDto.<List<UserDto>>builder().status(200).msg("ok").data(x).build();
+			return ResponeDto.<List<UserDto>>builder().status(200).msg("ok").data(x).build();
 		
 		} catch (Exception e) {
-			return responeDto.<List<UserDto>>builder().status(400).msg("bad request").build();
+			return ResponeDto.<List<UserDto>>builder().status(400).msg("bad request").build();
 		}
 	}
 	@PutMapping("/Ban-Phuoc")
-	public responeDto<Boolean>banPhuoc(@RequestParam("id") int id){
+	public ResponeDto<Boolean>banPhuoc(@RequestParam("id") int id){
 		try {
 			UserDto userDto = userServiceImpl.SearchById(id);
 			userDto.setFamous(!userDto.isFamous());
 			userServiceImpl.updateUserDetails(userDto.getUserName(), userDto.isFamous(), userDto.getRole());
-			return responeDto.<Boolean>builder().status(200).msg("ok").data(userDto.isFamous()).build();
+			return ResponeDto.<Boolean>builder().status(200).msg("ok").data(userDto.isFamous()).build();
 		} catch (Exception e) {
 			e.printStackTrace();
-			return responeDto.<Boolean>builder().status(400).msg("bad request").build();
+			return ResponeDto.<Boolean>builder().status(400).msg("bad request").build();
 		}
 	}
 	@PutMapping("/Dong-Dam")
-	public responeDto<String>dongDam(@RequestParam("id") int id){
+	public ResponeDto<String>dongDam(@RequestParam("id") int id){
 		try {
 			UserDto userDto = userServiceImpl.SearchById(id);
 			if (userDto.getRole().equals("ADMIN")) {
@@ -119,24 +119,24 @@ FolowerServiceImpl folowerServiceImpl;
 			};
 			
 			userServiceImpl.updateUserDetails(userDto.getUserName(), userDto.isFamous(), userDto.getRole());
-			return responeDto.<String>builder().status(200).msg("ok").data(userDto.getRole()).build();
+			return ResponeDto.<String>builder().status(200).msg("ok").data(userDto.getRole()).build();
 		} catch (Exception e) {
 			e.printStackTrace();
-			return responeDto.<String>builder().status(400).msg("bad request").build();
+			return ResponeDto.<String>builder().status(400).msg("bad request").build();
 		}
 	}
 	@DeleteMapping("/xoa-user")
-	public responeDto<String>xoaUser(@RequestParam("id") int id){
+	public ResponeDto<String>xoaUser(@RequestParam("id") int id){
 		try {
 			userServiceImpl.delete(id);
-			return responeDto.<String>builder().status(200).msg("ok").data("success").build();
+			return ResponeDto.<String>builder().status(200).msg("ok").data("success").build();
 		} catch (Exception e) {
 			e.printStackTrace();
-			return responeDto.<String>builder().status(400).msg("bad request").build();
+			return ResponeDto.<String>builder().status(400).msg("bad request").build();
 		}
 	}
 	@GetMapping("/SelectImgPostAll")
-	public responeDto<List<BaiViet>> SelectImgPostAll(@RequestParam("page") int page,
+	public ResponeDto<List<BaiViet>> SelectImgPostAll(@RequestParam("page") int page,
 			@RequestParam("size") int size
 			){
 		try {
@@ -154,16 +154,16 @@ FolowerServiceImpl folowerServiceImpl;
 				
 				baiViets.add(baiViet);
 			}
-			return responeDto.<List<BaiViet>>builder().status(200)
+			return ResponeDto.<List<BaiViet>>builder().status(200)
 					.msg("success").data(baiViets).build();
 		} catch (Exception e) {
 			// TODO: handle exception
-			return responeDto.<List<BaiViet>>builder().status(400)
+			return ResponeDto.<List<BaiViet>>builder().status(400)
 					.msg("bad request").build();
 		}
 	}
 	@GetMapping("/SearchAllCmts")
-	public responeDto<List<CommentFull>>SearchAllCmtsByVideoId(@RequestParam("page") int page,
+	public ResponeDto<List<CommentFull>>SearchAllCmtsByVideoId(@RequestParam("page") int page,
 			@RequestParam("size") int size){
 		try {
 			int x = page-1;
@@ -179,30 +179,30 @@ FolowerServiceImpl folowerServiceImpl;
 				full.setVideo(video);
 				commentFulls.add(full);
 			}
-			return responeDto.<List<CommentFull>>builder().msg("OK").status(200).data(commentFulls).build();
+			return ResponeDto.<List<CommentFull>>builder().msg("OK").status(200).data(commentFulls).build();
 		} catch (Exception e) {
 			// TODO: handle exception
-			return responeDto.<List<CommentFull>>builder().msg("not found").status(404).build();
+			return ResponeDto.<List<CommentFull>>builder().msg("not found").status(404).build();
 		}
 	}
 	@DeleteMapping("/xoa-BaiViet")
-	public responeDto<String>xoaBaiViet(@RequestParam("id") int id){
+	public ResponeDto<String>xoaBaiViet(@RequestParam("id") int id){
 		try {
 			videoServiceImpl.delete(id);
-			return responeDto.<String>builder().status(200).msg("ok").data("success").build();
+			return ResponeDto.<String>builder().status(200).msg("ok").data("success").build();
 		} catch (Exception e) {
 			e.printStackTrace();
-			return responeDto.<String>builder().status(400).msg("bad request").build();
+			return ResponeDto.<String>builder().status(400).msg("bad request").build();
 		}
 	}
 	@DeleteMapping("/xoa-Cmts")
-	public responeDto<String>xoaCmts(@RequestParam("id") int id){
+	public ResponeDto<String>xoaCmts(@RequestParam("id") int id){
 		try {
 			commentServiceImpl.delete(id);
-			return responeDto.<String>builder().status(200).msg("ok").data("success").build();
+			return ResponeDto.<String>builder().status(200).msg("ok").data("success").build();
 		} catch (Exception e) {
 			e.printStackTrace();
-			return responeDto.<String>builder().status(400).msg("bad request").build();
+			return ResponeDto.<String>builder().status(400).msg("bad request").build();
 		}
 	}
 }

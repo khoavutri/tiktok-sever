@@ -8,7 +8,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class responeDto<T> {
+public class ResponeDto<T> {
 	private int status;
 	private String msg;
 	@JsonInclude(value = Include.NON_NULL)

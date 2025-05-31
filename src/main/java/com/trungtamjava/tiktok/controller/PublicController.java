@@ -30,7 +30,7 @@ import com.trungtamjava.tiktok.model.LikeDto;
 import com.trungtamjava.tiktok.model.Profile;
 import com.trungtamjava.tiktok.model.UserDto;
 import com.trungtamjava.tiktok.model.VideoDto;
-import com.trungtamjava.tiktok.model.responeDto;
+import com.trungtamjava.tiktok.model.ResponeDto;
 import com.trungtamjava.tiktok.service.impl.CommentServiceImpl;
 import com.trungtamjava.tiktok.service.impl.FolowerServiceImpl;
 import com.trungtamjava.tiktok.service.impl.JwtTokenService;
@@ -70,7 +70,7 @@ public class PublicController {
 	}
 
 	@PostMapping("/SignUp")
-	public responeDto<UserDto> signUp(@RequestParam("userName") String userName,
+	public ResponeDto<UserDto> signUp(@RequestParam("userName") String userName,
 			@RequestParam("passWord") String passWord,
 			@RequestParam("gmail") String gmail,
 			@RequestParam("name") String name,
@@ -92,29 +92,29 @@ public class PublicController {
     		userDto.setBirthday(date);
        
 		if (userserviceImpl.SearchByUserName(userDto.getUserName())!=null) {
-			return responeDto.<UserDto>builder().status(400).msg("userName existed").build();
+			return ResponeDto.<UserDto>builder().status(400).msg("userName existed").build();
 		}
 		if (userserviceImpl.SearchByGmail(userDto.getGmail())!=null) {
-			return responeDto.<UserDto>builder().status(400).msg("gmail existed").build();
+			return ResponeDto.<UserDto>builder().status(400).msg("gmail existed").build();
 		}
 		userserviceImpl.insert(userDto);
-		return responeDto.<UserDto>builder().status(201).msg("created").data(userDto).build();
+		return ResponeDto.<UserDto>builder().status(201).msg("created").data(userDto).build();
 	}
 	@PostMapping("/Login")
-	public responeDto<UserDto>Login(@RequestParam("userName")String userName,
+	public ResponeDto<UserDto>Login(@RequestParam("userName")String userName,
 			@RequestParam("passWord")String passWord){
 		UserDto a = userserviceImpl.SearchByUserName(userName);
 		
-		if (a==null) {return responeDto.<UserDto>builder().msg("not found").status(401).build();}
+		if (a==null) {return ResponeDto.<UserDto>builder().msg("not found").status(401).build();}
 	else {
 		boolean b=false;
 		if (new BCryptPasswordEncoder().matches(passWord, a.getPassWord())) {
 			b=true;
 		}
 		if (b) 
-			return responeDto.<UserDto>builder().msg("success").status(200).data(a).build();
+			return ResponeDto.<UserDto>builder().msg("success").status(200).data(a).build();
 		else 
-			return responeDto.<UserDto>builder().msg("wrong password").status(401).build();
+			return ResponeDto.<UserDto>builder().msg("wrong password").status(401).build();
 		} 
 	}
 	@Autowired
@@ -123,27 +123,27 @@ public class PublicController {
 	@Autowired
 	JwtTokenService jwtTokenService;
 	@PostMapping("/AutoLogin")
-	public responeDto<String> autologin(@RequestParam("username") String username,
+	public ResponeDto<String> autologin(@RequestParam("username") String username,
 			@RequestParam("password") String password){
 		try {
 			authenticationManager.authenticate(new 
 					UsernamePasswordAuthenticationToken(username, password));
 			
 			
-			return responeDto.<String>builder().status(200)
+			return ResponeDto.<String>builder().status(200)
 					.msg("success").data(jwtTokenService.creatToken(username)).build();
 		} catch (Exception e) {	
 		if (userserviceImpl.SearchByUserName(username)!=null) 
-			return responeDto.<String>builder().msg("wrong password").status(401).build();
+			return ResponeDto.<String>builder().msg("wrong password").status(401).build();
 		else
-			return responeDto.<String>builder().msg("not found").status(401).build();}
+			return ResponeDto.<String>builder().msg("not found").status(401).build();}
 	}	
 	
 	@PostMapping("/AuthenticatioCode")
-	public responeDto<String> AuthenticationCode(@RequestParam("gmail") String gmail) {
+	public ResponeDto<String> AuthenticationCode(@RequestParam("gmail") String gmail) {
 		String s = "";
 		if (userserviceImpl.SearchByGmail(gmail)==null) {
-			return responeDto.<String>builder().status(404).msg("not found gmail").build();
+			return ResponeDto.<String>builder().status(404).msg("not found gmail").build();
 		}
 		for (int i=0;i<6;i++) {
 		Random random = new Random();
@@ -152,41 +152,41 @@ public class PublicController {
 	    }
 		try {
 			sendMail.sendMail(gmail, "Tiktok UI","Mã Xác thực của bạn là: "+s);
-			return responeDto.<String>builder().msg("success").status(200).data(s).build();
+			return ResponeDto.<String>builder().msg("success").status(200).data(s).build();
 		} catch (Exception e) {
-			return responeDto.<String>builder().msg("failed").status(500).data("unable to send").build();
+			return ResponeDto.<String>builder().msg("failed").status(500).data("unable to send").build();
 		}
 		
 	}
 	@PostMapping("/SearchUserByGmail")
-	public responeDto<UserDto> SearchUserByGmail(@RequestParam("gmail") String gmail){
+	public ResponeDto<UserDto> SearchUserByGmail(@RequestParam("gmail") String gmail){
 		if (userserviceImpl.SearchByGmail(gmail)!=null) {
-			return responeDto.<UserDto>builder().msg("success").status(200)
+			return ResponeDto.<UserDto>builder().msg("success").status(200)
 					.data(userserviceImpl.SearchByGmail(gmail)).build();
 		} else {
-			return responeDto.<UserDto>builder().msg("not found").status(404).build();
+			return ResponeDto.<UserDto>builder().msg("not found").status(404).build();
 		}
 	}
 	@PutMapping("/UpdatePassWordByGmail")
-	public responeDto<String>UpdatePassWordByGmail(@RequestParam("gmail") String gmail,
+	public ResponeDto<String>UpdatePassWordByGmail(@RequestParam("gmail") String gmail,
 					@RequestParam("password") String password){
 		try {
 			UserDto userDto = userserviceImpl.SearchByGmail(gmail);
 			userDto.setPassWord(password);
 			userserviceImpl.update(userDto);
-			return responeDto.<String>builder().status(200).msg("success").data(password).build();
+			return ResponeDto.<String>builder().status(200).msg("success").data(password).build();
 		} catch (Exception e) {
-			return responeDto.<String>builder().status(404).msg("failed").build();
+			return ResponeDto.<String>builder().status(404).msg("failed").build();
 		}
 	}
 	@GetMapping("/ResultFormLogin")
-	public responeDto<List<UserDto>>ResultFormLogin(@RequestParam("name") String name){
+	public ResponeDto<List<UserDto>>ResultFormLogin(@RequestParam("name") String name){
 		List<UserDto> lists = userserviceImpl.SearchPeopleByName(name, 0, 5);
-		return responeDto.<List<UserDto>>builder().msg("Success").status(200).data(lists).build();
+		return ResponeDto.<List<UserDto>>builder().msg("Success").status(200).data(lists).build();
 	}
 
 	@GetMapping("/SelectImgPostAll")
-	public responeDto<List<BaiViet>> SelectImgPostAll(@RequestParam("size") int size,
+	public ResponeDto<List<BaiViet>> SelectImgPostAll(@RequestParam("size") int size,
 			@RequestParam("userId") int userId){
 		try {
 			List<BaiViet>baiViets =  new ArrayList<BaiViet>();
@@ -220,26 +220,26 @@ public class PublicController {
 			}
 			
 			
-			return responeDto.<List<BaiViet>>builder().status(200)
+			return ResponeDto.<List<BaiViet>>builder().status(200)
 					.msg("success").data(baiViets).build();
 		} catch (Exception e) {
 			// TODO: handle exception
-			return responeDto.<List<BaiViet>>builder().status(400)
+			return ResponeDto.<List<BaiViet>>builder().status(400)
 					.msg("bad request").build();
 		}
 	}
 	@GetMapping("/SellectUserById")
-	public responeDto<UserDto>SellectUserById(@RequestParam("id")int id){
+	public ResponeDto<UserDto>SellectUserById(@RequestParam("id")int id){
 		try {
 			UserDto userDto = userserviceImpl.SearchById(id);
-			return responeDto.<UserDto>builder().status(200).data(userDto).msg("success").build();
+			return ResponeDto.<UserDto>builder().status(200).data(userDto).msg("success").build();
 		} catch (Exception e) {
 			// TODO: handle exception
-			return responeDto.<UserDto>builder().status(404).msg("not found").build();
+			return ResponeDto.<UserDto>builder().status(404).msg("not found").build();
 		}
 	}
 	@PostMapping("/SearchProfile")
-	public responeDto<Profile>SearchProfile(@RequestParam("userId") int userId
+	public ResponeDto<Profile>SearchProfile(@RequestParam("userId") int userId
 			,@RequestParam("userName") String userName){
 		try {
 			Profile profile = new Profile();
@@ -257,15 +257,15 @@ public class PublicController {
 					profile.setTrangthai(3);
 				} else profile.setTrangthai(2);
 				}
-			return responeDto.<Profile>builder().status(200).msg("success").data(profile).build();
+			return ResponeDto.<Profile>builder().status(200).msg("success").data(profile).build();
 		} catch (Exception e) {
 			// TODO: handle exception
-			return responeDto.<Profile>builder().status(400).msg("bad request").build();
+			return ResponeDto.<Profile>builder().status(400).msg("bad request").build();
 		}
 	}
 	
 	@GetMapping("/SelectRandomNotLogin")
-	public responeDto<List<BaiViet>>SelectRandomNotLogin(@RequestParam("userId") int userId){
+	public ResponeDto<List<BaiViet>>SelectRandomNotLogin(@RequestParam("userId") int userId){
 		try {
 			List<BaiViet>baiViets = new ArrayList<BaiViet>();
 			List<UserDto>users = userserviceImpl.SearchPeopleByName("",0 , 50);
@@ -285,15 +285,15 @@ public class PublicController {
 				baiViets.add(baiViet);
 				}
 			}
-			return responeDto.<List<BaiViet>>builder().status(200).msg("OK").data(baiViets).build();
+			return ResponeDto.<List<BaiViet>>builder().status(200).msg("OK").data(baiViets).build();
 		} catch (Exception e) {
 			// TODO: handle exception
 			log.info(e.getMessage());
-			return responeDto.<List<BaiViet>>builder().status(400).msg("Bad request").build();
+			return ResponeDto.<List<BaiViet>>builder().status(400).msg("Bad request").build();
 		}
 	}
 	@GetMapping("/SearchAllCmtsByVideoId")
-	public responeDto<List<CommentFull>>SearchAllCmtsByVideoId(@RequestParam("videoId") int videoId,
+	public ResponeDto<List<CommentFull>>SearchAllCmtsByVideoId(@RequestParam("videoId") int videoId,
 			@RequestParam("userId") int userId){
 		try {
 			VideoDto videoDto = videoServiceImpl.SearchById(videoId);
@@ -314,14 +314,14 @@ public class PublicController {
 				} else full.setTrangthai(0);
 				commentFulls.add(full);
 			}
-			return responeDto.<List<CommentFull>>builder().msg("OK").status(200).data(commentFulls).build();
+			return ResponeDto.<List<CommentFull>>builder().msg("OK").status(200).data(commentFulls).build();
 		} catch (Exception e) {
 			// TODO: handle exception
-			return responeDto.<List<CommentFull>>builder().msg("not found").status(404).build();
+			return ResponeDto.<List<CommentFull>>builder().msg("not found").status(404).build();
 		}
 	}
 	@GetMapping("/SearchBaiVietByVideoId")
-	public responeDto<BaiViet> SearchBaiVietByVideoId(@RequestParam("videoId") int videoId,
+	public ResponeDto<BaiViet> SearchBaiVietByVideoId(@RequestParam("videoId") int videoId,
 			@RequestParam("userId") int userId){
 		try {
 			VideoDto video = videoServiceImpl.SearchById(videoId);
@@ -348,16 +348,16 @@ public class PublicController {
 			} else {
 				baiViet.setDaLike(0);
 			}
-			return responeDto.<BaiViet>builder().status(200)
+			return ResponeDto.<BaiViet>builder().status(200)
 					.msg("success").data(baiViet).build();
 		} catch (Exception e) {
 			// TODO: handle exception
-			return responeDto.<BaiViet>builder().status(400)
+			return ResponeDto.<BaiViet>builder().status(400)
 					.msg("bad request").build();
 		}
 	}
 	@GetMapping("/Search-Post-By-navBar")
-	public responeDto<List<BaiViet>> SearchPostBynavBar(@RequestParam("size") int size,
+	public ResponeDto<List<BaiViet>> SearchPostBynavBar(@RequestParam("size") int size,
 			@RequestParam("userId") int userId,@RequestParam("q") String q){
 		try {
 			List<BaiViet>baiViets =  new ArrayList<BaiViet>();
@@ -389,16 +389,16 @@ public class PublicController {
 				}
 				baiViets.add(baiViet);
 			}
-			return responeDto.<List<BaiViet>>builder().status(200)
+			return ResponeDto.<List<BaiViet>>builder().status(200)
 					.msg("success").data(baiViets).build();
 		} catch (Exception e) {
 			// TODO: handle exception
-			return responeDto.<List<BaiViet>>builder().status(404)
+			return ResponeDto.<List<BaiViet>>builder().status(404)
 					.msg("not found").build();
 		}
 	}
 	@GetMapping("/Search-profile-By-navBar")
-	public responeDto<List<Profile>>SearchProfileByNavBar(@RequestParam("size") int size,
+	public ResponeDto<List<Profile>>SearchProfileByNavBar(@RequestParam("size") int size,
 			@RequestParam("userId") int userId,@RequestParam("q") String q){
 		try {
 			List<Profile>profiles = new ArrayList<Profile>();
@@ -418,9 +418,9 @@ public class PublicController {
 					}
 				profiles.add(profile);
 			}
-			return responeDto.<List<Profile>>builder().status(200).msg("success").data(profiles).build();
+			return ResponeDto.<List<Profile>>builder().status(200).msg("success").data(profiles).build();
 		} catch (Exception e) {
-			return responeDto.<List<Profile>>builder().status(404).msg("not found").build();
+			return ResponeDto.<List<Profile>>builder().status(404).msg("not found").build();
 		}
 	}
 }

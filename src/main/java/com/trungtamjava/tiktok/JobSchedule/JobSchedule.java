@@ -11,7 +11,7 @@ import lombok.extern.log4j.Log4j2;
 public class JobSchedule {
 	@Scheduled(fixedDelay = 6000000)
 	public void khoa() {
-		log.info("khoa");
+		
 	
 	}
 }
